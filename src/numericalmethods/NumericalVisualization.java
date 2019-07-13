@@ -48,22 +48,26 @@ public class NumericalVisualization extends BorderPane {
 
     private Slider stepSizeSlider;
 
-    private Group eulerCurveChunksGroup = new Group();
-    private Group exactCurveChunksGroup = new Group();
-    private Group RK2CurveChunksGroup = new Group();
-    private Group RK4CurveChunksGroup = new Group();
+    private Group eulerCurveChunksGroup;
+    private Group exactCurveChunksGroup;
+    private Group RK2CurveChunksGroup;
+    private Group RK4CurveChunksGroup;
 
 
     public NumericalVisualization(double initialX, double initialY){
 
         setPadding(new Insets(10, 10, 10, 10));
 
+        eulerCurveChunksGroup = new Group();
+        exactCurveChunksGroup = new Group();
+        RK2CurveChunksGroup = new Group();
+        RK4CurveChunksGroup = new Group();
+
         this.initialX = initialX;
         this.initialY = initialY;
 
         infoPane = new StackPane();
         graphPane = new Pane();
-
 
         infoPane.setPrefSize(350, 600);
 
@@ -74,7 +78,6 @@ public class NumericalVisualization extends BorderPane {
 
         //set the info
         setInfo();
-
     }
 
     private void setInfo(){
@@ -97,6 +100,7 @@ public class NumericalVisualization extends BorderPane {
         sliderContainer.setBottom(equationVBox);
         BorderPane.setAlignment(equationVBox, Pos.TOP_CENTER);
         sliderContainer.setCenter(sliderHBox);
+        BorderPane.setAlignment(sliderHBox, Pos.BOTTOM_CENTER);
 
 
         infoPane.getChildren().addAll(sliderContainer);
@@ -115,6 +119,8 @@ public class NumericalVisualization extends BorderPane {
         setLeft(infoPane);
     }
     private void setCurvesInfoPane(GridPane curvesInfoPane){
+
+        curvesInfoPane.setPadding(new Insets(10));
 
         curvesInfoPane.setHgap(10);
         curvesInfoPane.setVgap(10);
@@ -147,12 +153,14 @@ public class NumericalVisualization extends BorderPane {
 
     private void setEquationVBox(VBox equationVBox){
 
+        Label equationLbl = new Label("Equation: ");
+
         ImageView equationView = new ImageView(
                 new Image(getClass().getResourceAsStream("/img/equation.gif")));
         ImageView initialValueView = new ImageView(
                 new Image(getClass().getResourceAsStream("/img/initialValue.gif")));
 
-        equationVBox.getChildren().addAll(equationView, initialValueView);
+        equationVBox.getChildren().addAll(equationLbl,equationView, initialValueView);
         equationVBox.setSpacing(20);
         equationVBox.setAlignment(Pos.CENTER);
 
@@ -283,8 +291,6 @@ public class NumericalVisualization extends BorderPane {
             eulerCurveChunksGroup.getChildren().addAll(eulersCurveChunk);
             RK2CurveChunksGroup.getChildren().add(RK2CurveChunk);
             RK4CurveChunksGroup.getChildren().add(RK4CurveChunk);
-
-            //System.out.printf("xs=%f  ys=%f  xe=%f  ye=%f  y'=%f %n", xStart, yStart, xEnd, yEnd, yPrime);
 
             xStart =xEnd;
             yStartEuler = yEndEuler;

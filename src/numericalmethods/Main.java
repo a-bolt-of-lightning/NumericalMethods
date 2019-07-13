@@ -16,14 +16,17 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        //equation info:
+        //y'(x)=-2y(x)+cos(4x) with y(0)=3
+        //y = 0.1*cos(4*x)+0.2*sin(4*x)+2.9*exp(-2*x);
+
         NumericalVisualization graph = new NumericalVisualization(0, 3);
 
-        System.out.println("st  0");
         Scene scene =  new Scene(graph, 1000, 650);
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Euler's Method");
+        primaryStage.setTitle("Numerical Method");
         primaryStage.show();
 
     }
