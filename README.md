@@ -8,6 +8,6 @@ the featured methods are:
  <br>
 use the slider to change the step size.
 <br>
-# Help doucument
+# Help doucument #
 
 https://github.com/a-bolt-of-lightning/NumericalMethods/blob/master/Numerical%20Methods%20for%20First%20Order%20Differential%20Equations.pdf
