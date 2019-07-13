@@ -5,4 +5,5 @@ the featured methods are:
 * Euler's method
 * Second Order Runge-Kutta (midpoint)
 * Fourth order Runge-Kutta 
+ <br>
 use the slider to change the step size.
