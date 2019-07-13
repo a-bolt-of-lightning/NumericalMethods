@@ -257,7 +257,7 @@ public class NumericalVisualization extends BorderPane {
             yEndEx = getExactEndPoint(0.05, xStartEx, yStartEx).getValue();
             xEndEx = getExactEndPoint(0.05, xStartEx, yStartEx).getKey();
 
-            System.out.printf("xs=%f  ys=%f  xe=%f  ye=%f  %n", xStartEx, yStartEx, xEndEx, yEndEx);
+            //System.out.printf("xs=%f  ys=%f  xe=%f  ye=%f  %n", xStartEx, yStartEx, xEndEx, yEndEx);
 
             Line exactCurveChunk = new Line(xStartEx*120, (360-yStartEx*120), xEndEx*120, (360-yEndEx*120));
             exactCurveChunksGroup.getChildren().add(exactCurveChunk);

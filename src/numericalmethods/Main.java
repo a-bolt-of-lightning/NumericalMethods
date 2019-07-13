@@ -1,16 +1,17 @@
 package numericalmethods;
 
 import javafx.application.Application;
-import javafx.application.HostServices;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.File;
 
 /**
  * Driver class used in the implementation of numerical methods
@@ -59,7 +60,7 @@ public class Main extends Application {
         helpMenu.getItems().addAll(helpItem, aboutItem);
 
         aboutItem.setOnAction(e->{
-            Pane aboutPage = new Pane();
+            About aboutPage = new About();
             setAboutPage(aboutPage);
 
             Stage secondStage =
@@ -71,6 +72,7 @@ public class Main extends Application {
     }
 
     private static void setAboutPage(Pane aboutPage){
+
 
     }
 
