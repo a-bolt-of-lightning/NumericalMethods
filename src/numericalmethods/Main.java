@@ -18,6 +18,7 @@ public class Main extends Application {
 
         NumericalVisualization graph = new NumericalVisualization(0, 3);
 
+        System.out.println("st  0");
         Scene scene =  new Scene(graph, 1000, 650);
 
         primaryStage.setScene(scene);

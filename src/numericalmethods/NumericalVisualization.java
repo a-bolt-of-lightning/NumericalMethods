@@ -38,10 +38,7 @@ import javafx.util.Pair;
 public class NumericalVisualization extends BorderPane {
 
 
-    //VERY IMPORTANT
     private double stepSize =0.05;
-
-    private Group group;
 
     private Pane infoPane;
     private Pane graphPane;
@@ -51,7 +48,7 @@ public class NumericalVisualization extends BorderPane {
 
     private Slider stepSizeSlider;
 
-    private Group curveChunksGroup = new Group();
+    private Group eulerCurveChunksGroup = new Group();
     private Group exactCurveChunksGroup = new Group();
     private Group RK2CurveChunksGroup = new Group();
     private Group RK4CurveChunksGroup = new Group();
@@ -64,7 +61,6 @@ public class NumericalVisualization extends BorderPane {
         this.initialX = initialX;
         this.initialY = initialY;
 
-        group = new Group();
         infoPane = new StackPane();
         graphPane = new Pane();
 
@@ -117,6 +113,51 @@ public class NumericalVisualization extends BorderPane {
         });
 
         setLeft(infoPane);
+    }
+    private void setCurvesInfoPane(GridPane curvesInfoPane){
+
+        curvesInfoPane.setHgap(10);
+        curvesInfoPane.setVgap(10);
+
+        curvesInfoPane.add(new Rectangle(20, 20, Color.BLACK), 0, 0);
+        curvesInfoPane.add(new Rectangle(20, 20, Color.RED), 0, 1);
+        curvesInfoPane.add(new Rectangle(20, 20, Color.GREEN), 0, 2);
+        curvesInfoPane.add(new Rectangle(20, 20, Color.BLUE), 0, 3);
+        curvesInfoPane.add(new Label("Exact"), 1, 0);
+        curvesInfoPane.add(new Label("RK2"), 1, 1);
+        curvesInfoPane.add(new Label("RK4"), 1, 2);
+        curvesInfoPane.add(new Label("Euler's method"), 1, 3);
+
+    }
+
+    private void setSliderHBox(HBox sliderHBox){
+
+        sliderHBox.setSpacing(20);
+        sliderHBox.setPadding(new Insets(40, 10, 20, 10));
+
+        ImageView stepSizeImg = new ImageView(
+                new Image(getClass().getResourceAsStream("/img/stepSize.gif")));
+
+        setSliders();
+
+        sliderHBox.getChildren().addAll(stepSizeImg, stepSizeSlider);
+
+
+    }
+
+    private void setEquationVBox(VBox equationVBox){
+
+        ImageView equationView = new ImageView(
+                new Image(getClass().getResourceAsStream("/img/equation.gif")));
+        ImageView initialValueView = new ImageView(
+                new Image(getClass().getResourceAsStream("/img/initialValue.gif")));
+
+        equationVBox.getChildren().addAll(equationView, initialValueView);
+        equationVBox.setSpacing(20);
+        equationVBox.setAlignment(Pos.CENTER);
+
+
+
     }
 
     private void setSliders(){
@@ -184,32 +225,32 @@ public class NumericalVisualization extends BorderPane {
 
     private void drawCurves(){
 
-        curveChunksGroup.getChildren().clear();
+        eulerCurveChunksGroup.getChildren().clear();
         exactCurveChunksGroup.getChildren().clear();
         RK2CurveChunksGroup.getChildren().clear();
         RK4CurveChunksGroup.getChildren().clear();
-
-
 
         double xStartEx = initialX;
         double xEndEx = 0;
         double yStartEx  = initialY;
         double yEndEx=0;
 
-
         double xStart = initialX;
-        double yStart =initialY;
+        double yStartEuler =initialY;
         double yStartRK2 = initialY;
         double yEndRK2;
         double yStartRK4 = initialY;
         double yEndRK4;
         double xEnd=0;
-        double yEnd=0;
+        double yEndEuler=0;
 
 
         while((xEndEx*120<600 && 600-yEndEx*120>0)){
             yEndEx = getExactEndPoint(0.05, xStartEx, yStartEx).getValue();
             xEndEx = getExactEndPoint(0.05, xStartEx, yStartEx).getKey();
+
+            System.out.printf("xs=%f  ys=%f  xe=%f  ye=%f  %n", xStartEx, yStartEx, xEndEx, yEndEx);
+
             Line exactCurveChunk = new Line(xStartEx*120, (360-yStartEx*120), xEndEx*120, (360-yEndEx*120));
             exactCurveChunksGroup.getChildren().add(exactCurveChunk);
 
@@ -219,20 +260,18 @@ public class NumericalVisualization extends BorderPane {
         }
 
 
-        while((xEnd*120<600 && 600-yEnd*120>0)){
-
-
+        while((xEnd*120<600 && 600-yEndEuler*120>0)){
 
             xEnd = xStart + stepSize;
 
-            yEnd = getEulersEndPoint(stepSize, xStart, yStart).getValue();
+            yEndEuler = getEulersEndPoint(stepSize, xStart, yStartEuler).getValue();
 
             yEndRK2 = getRKEndPoint(stepSize, xStart, yStartRK2, 2).getValue();
 
             yEndRK4 = getRKEndPoint(stepSize, xStart, yStartRK4, 4).getValue();
 
 
-            Line eulersCurveChunk = new Line(xStart*120, (360-yStart*120), xEnd*120, (360-yEnd*120));
+            Line eulersCurveChunk = new Line(xStart*120, (360-yStartEuler*120), xEnd*120, (360-yEndEuler*120));
             eulersCurveChunk.setStroke(Color.BLUE);
 
             Line RK2CurveChunk = new Line(xStart*120, (360-yStartRK2*120), xEnd*120, (360-yEndRK2*120));
@@ -241,25 +280,21 @@ public class NumericalVisualization extends BorderPane {
             Line RK4CurveChunk = new Line(xStart*120, (360-yStartRK4*120), xEnd*120, (360-yEndRK4*120));
             RK4CurveChunk.setStroke(Color.GREEN);
 
-            curveChunksGroup.getChildren().addAll(eulersCurveChunk);
+            eulerCurveChunksGroup.getChildren().addAll(eulersCurveChunk);
             RK2CurveChunksGroup.getChildren().add(RK2CurveChunk);
             RK4CurveChunksGroup.getChildren().add(RK4CurveChunk);
-
 
             //System.out.printf("xs=%f  ys=%f  xe=%f  ye=%f  y'=%f %n", xStart, yStart, xEnd, yEnd, yPrime);
 
             xStart =xEnd;
-
-            yStart = yEnd;
-
+            yStartEuler = yEndEuler;
             yStartRK2 = yEndRK2;
-
             yStartRK4 = yEndRK4;
 
         }
 
-        if(!graphPane.getChildren().contains(curveChunksGroup)){
-            graphPane.getChildren().add(curveChunksGroup);
+        if(!graphPane.getChildren().contains(eulerCurveChunksGroup)){
+            graphPane.getChildren().add(eulerCurveChunksGroup);
         }
         if(!graphPane.getChildren().contains(exactCurveChunksGroup)){
             graphPane.getChildren().add(exactCurveChunksGroup);
@@ -280,7 +315,6 @@ public class NumericalVisualization extends BorderPane {
 
         //k1 = F(x, y)
         double k1 = getYPrime(startX, startY);
-
 
         double newX = startX + stepSize/2;
         double newY = startY + stepSize*k1/2;
@@ -312,7 +346,6 @@ public class NumericalVisualization extends BorderPane {
 
         double yPrime = getYPrime(startX, startY);
 
-
         double xEnd = startX + stepSize;
         double yEnd = yPrime*stepSize + startY;
 
@@ -322,7 +355,7 @@ public class NumericalVisualization extends BorderPane {
     private Pair<Double, Double> getExactEndPoint(double stepSize, double startX, double startY){
 
         double endX = startX + stepSize;
-        double endY = getExactY(startX, startY);
+        double endY = getExactY(endX);
 
         return new Pair<>(endX, endY);
     }
@@ -334,55 +367,9 @@ public class NumericalVisualization extends BorderPane {
 
     }
 
-    private double getExactY(double x, double y){
+    private double getExactY(double x){
 
         //y = 0.1*cos(4*x)+0.2*sin(4*x)+2.9*exp(-2*x);
         return 0.1*Math.cos(4*x) + 0.2*Math.sin(4*x) + 2.9*Math.exp(-2*x);
-    }
-
-    private void setCurvesInfoPane(GridPane curvesInfoPane){
-
-        curvesInfoPane.setHgap(10);
-        curvesInfoPane.setVgap(10);
-
-        curvesInfoPane.add(new Rectangle(20, 20, Color.BLACK), 0, 0);
-        curvesInfoPane.add(new Rectangle(20, 20, Color.RED), 0, 1);
-        curvesInfoPane.add(new Rectangle(20, 20, Color.GREEN), 0, 2);
-        curvesInfoPane.add(new Rectangle(20, 20, Color.BLUE), 0, 3);
-        curvesInfoPane.add(new Label("Exact"), 1, 0);
-        curvesInfoPane.add(new Label("RK2"), 1, 1);
-        curvesInfoPane.add(new Label("RK4"), 1, 2);
-        curvesInfoPane.add(new Label("Euler's method"), 1, 3);
-
-    }
-
-    private void setSliderHBox(HBox sliderHBox){
-
-        sliderHBox.setSpacing(20);
-        sliderHBox.setPadding(new Insets(40, 10, 20, 10));
-
-        ImageView stepSizeImg = new ImageView(
-                new Image(getClass().getResourceAsStream("/img/stepSize.gif")));
-
-        setSliders();
-
-        sliderHBox.getChildren().addAll(stepSizeImg, stepSizeSlider);
-
-
-    }
-
-    private void setEquationVBox(VBox equationVBox){
-
-        ImageView equationView = new ImageView(
-                new Image(getClass().getResourceAsStream("/img/equation.gif")));
-        ImageView initialValueView = new ImageView(
-                new Image(getClass().getResourceAsStream("/img/initialValue.gif")));
-
-        equationVBox.getChildren().addAll(equationView, initialValueView);
-        equationVBox.setSpacing(20);
-        equationVBox.setAlignment(Pos.CENTER);
-
-
-
     }
 }
